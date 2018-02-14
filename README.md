@@ -42,9 +42,15 @@ Using Rekognition, we get a payload of each of the 13,000 images which look like
 }
 ```
 
-While eventually we'd like to make use of other emotions for things like comedies and what-not, for now we're just focused on smiling and laughing for comedies.
+While eventually we'd like to make use of other emotions for things like comedies and what-not, for now we're just focused on smiling and laughing for comedies. However, the Deeplens networks were not about to handle more than one output up until less than a week before due date :-P.
 
-We wrap up the 13,000 images (split into training and validation sets) into [rec files](https://mxnet.incubator.apache.org/tutorials/basic/image_io.html) for easier training with Gluon. With all the labels we've parsed. Though, we'll just train on smiles for now.
+In order to focus the learning of the model on faces, we make us of [OpenCV's Haar Cascades](https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html) to crop the images to just the faces, as seen below:
+
+![Al_gore_before](images/Al_Gore_0001.jpg)
+
+![Al_gore_before](images/Al_Gore_resized.jpg)
+
+We wrap up the 13,000 cropped images (split into training and validation sets) into [rec files](https://mxnet.incubator.apache.org/tutorials/basic/image_io.html) for easier training with Gluon. With all the labels we've parsed. Though, we'll just train on smiles for now.
 
 ```
 python im2rec.py   ~/deeplens-facial-emotion/listfile-train.lst ~/deeplens-facial-emotion/cnn-face/
@@ -55,10 +61,11 @@ All this work can be seen in the `dataset-creation.ipynb` notebook.
 
 ## The Custom Model (Smile Net)
 
+With our 2 Rec files for training in validation, we can then train a modified [AlexNet](https://en.wikipedia.org/wiki/AlexNet) to make a Convolutional Neural Network (with the last 2 dense layers lightened to bring down model size) for training.
 
+After 30 epochs and about an 80% accuracy rate, we can then output the model to S3 for use in our Deeplens project.
 
-https://en.wikipedia.org/wiki/AlexNet
-
+All this work can be seen in the `face-detection-model-creation` notebook.
 
 ## The Lambda Function
 
@@ -71,7 +78,9 @@ https://en.wikipedia.org/wiki/AlexNet
 
 ## Further Work
 
-
+* Obviously a better initial dataset would help training.
+* More effort into the emotion model would be useful as it's 80% accuracy probably isn't enough for what we'd want out system to do
+* Uploading a runtime of emotional scores to a kinesis streams would be useful in aggregating responses to comedic media.
 
 
 
