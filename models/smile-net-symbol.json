@@ -354,7 +354,7 @@
       "attrs": {
         "__dtype__": "0", 
         "__lr_mult__": "1.0", 
-        "__shape__": "(10, 0)", 
+        "__shape__": "(2, 0)", 
         "__wd_mult__": "1.0"
       }, 
       "inputs": []
@@ -366,7 +366,7 @@
         "__dtype__": "0", 
         "__init__": "zeros", 
         "__lr_mult__": "1.0", 
-        "__shape__": "(10,)", 
+        "__shape__": "(2,)", 
         "__wd_mult__": "1.0"
       }, 
       "inputs": []
@@ -377,7 +377,7 @@
       "attrs": {
         "flatten": "True", 
         "no_bias": "False", 
-        "num_hidden": "10"
+        "num_hidden": "2"
       }, 
       "inputs": [[32, 0, 0], [33, 0, 0], [34, 0, 0]]
     }
