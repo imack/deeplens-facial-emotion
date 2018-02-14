@@ -52,7 +52,7 @@ def greengrass_infinite_infer_run():
         results_thread = FIFO_Thread()
         results_thread.start()
 
-        haar_face_cascade = cv2.CascadeClassifier('data/haarcascade_frontalface_alt.xml')
+        haar_face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
 
         # Send a starting message to IoT console
         client.publish(topic=iotTopic, payload="Face detection starts now")
