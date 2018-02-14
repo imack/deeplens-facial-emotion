@@ -3,17 +3,19 @@ An AWS Deeplens Challenge Submission Trying to Measure a Viewers Reaction to Fun
 
 ## The Goal
 
-The main goal of the project is to replace the "focus group" the movie studios would have to perform when a new comedy movie comes out. Instead of having a small group of people from a mall in Iowa determining if something is subjectively funny, our goal is to use the Deeplens to look a a viewers reaction and simply measure their smiles and laughs to more quantitatively determine their reaction to a movie. Also, by automating the process of gauging a viewers reaction while watching media, we can allow many more subjects to partcipate since we aren't limited to human facilitators to run the experiment. People could just volunteer to have a camera put on them while watching a movie.
+The main goal of the project is to replace the "focus group" movie studios would have to perform when a new comedy movie comes out. Instead of having a small group of people from a mall in Iowa determining if a movie is subjectively funny, our goal is to use the Deeplens to look at viewers reaction and simply measure their smiles and laughs more quantitatively using Deeplens. Also, by automating the process of gauging a viewers reaction while watching media, we can allow many more subjects to partcipate since we aren't limited to human facilitators to run the experiment.
 
-To achieve this, we need a project that will identify users in view as they view a movie screener, and a model which will detect their reaction. Our deeplens project is about detecting faces in a frame and using a Convolutional Neural Network model to determine if they are smiling in a particular frame. 
+To achieve this we need a project that will identify users in the Deeplens view as they screen a movie, and a model which will detect their reaction. Our Deeplens project will detect faces in a frame and using a Convolutional Neural Network to determine if they are smiling in a particular frame. These results can then be sent up using IoT to aggregate data about their reaction to viewing a movie.
 
-Since there is no pre-made model of facial expressions we need to train out own model using AWS Services.
+All that would be required of a subject is to have a Deeplens viewing their reaction while the subject herself is watching the movie the studio is trying to put in front of a test audience.
+
+Since there is no pre-made models of facial expressions (we could find) we need to train out own model using AWS Services.
 
 ## Training Set Creation
 
-Before we can train a model we need a dataset. Using the [Labelled Faces in the Wild](http://vis-www.cs.umass.edu/lfw/) dataset, we have 13,000 faces in varios states of expression.
+Before we can train a model to check for smiles, we need a dataset. Using the [Labelled Faces in the Wild](http://vis-www.cs.umass.edu/lfw/) dataset, we have 13,000 faces in various states of expression.
 
-However, we need these labelled to have a "smile" or not and since we didn't really have time to manually check these we decided to make use of [Amazon Rekognition](https://aws.amazon.com/rekognition/) to label the images for us.
+However, we need these images labelled to have a "smile" or not and since we didn't really have time to manually check these we decided to make use of [Amazon Rekognition](https://aws.amazon.com/rekognition/) to label the images for us.
 
 While this means our model's accuracy will have an upper bound of Rekognition's accuracy, we have great faith in the Amazon AI team's work.
 
@@ -42,7 +44,7 @@ Using Rekognition, we get a payload of each of the 13,000 images which look like
 }
 ```
 
-While eventually we'd like to make use of other emotions for things like comedies and what-not, for now we're just focused on smiling and laughing for comedies. However, the Deeplens networks were not about to handle more than one output up until less than a week before due date :-P.
+While eventually we'd like to make use of other emotions for things other ranges of film work, for now we're just focused on smiling and laughing for comedies. The Deeplens networks were not about to handle more than one output up until less than a week before due date :-P.
 
 In order to focus the learning of the model on faces, we make us of [OpenCV's Haar Cascades](https://docs.opencv.org/3.3.0/d7/d8b/tutorial_py_face_detection.html) to crop the images to just the faces, as seen below:
 
@@ -73,19 +75,14 @@ The outputted models can be seen in the `models` folder with the `smile-net` pre
 
 Our lambda function to run inference is based off the "face-detection" example. However, our function uses the model optimizer on load and uses the OpenCV's Haar Cascade to detect faces first instead of the model.
 
-For each face detected using the Haar cascade, we use our optimized `smile-net` model to determine if 
+For each face detected using the Haar cascade, we use our optimized `smile-net` model to determine if the cropped face area is smiling.  The model we use is our created `smile-net` model which we run on each individual face that is detected. For each face that is "smiling", we draw a blueish frame around the face, and for each neutral face we draw an orange frame around the discovered face. 
 
-Instead, the model we use is our created `smile-net` model which we run on each individual face that is detected. For each face that is "smiling", we draw a blueish frame around the face, and for each neutral face we draw a redish frame around the discovered face. 
-
-The `lambda_package` folder contains the modified `greengrassHelloWorld.py` file, and the `haarcascade_frontalface_alt.xml` file. The remaining files from the detect-faces were excluded.
+The `lambda_package` folder contains the modified `greengrassHelloWorld.py` file, and the `haarcascade_frontalface_alt.xml` file. 
 
 ![Neutral](images/neutral.png)
 
 ![Smiling](images/smiling.png)
 
-## Demo Video
-
-[]()
 
 ## Further Work
 
