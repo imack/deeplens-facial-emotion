@@ -94,17 +94,17 @@ def greengrass_infinite_infer_run():
                 parsed_results = model.parseResult(model_type, infer_output)
                 prob = parsed_results[model_type][0]['prob']
 
-                if prob > 0.0:
+                if prob > prob_thresh:
                     # smiling, show blueish
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 165, 20), 4)
                 else:
                     # Neutral, show orangish
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (20, 165, 255), 4)
 
-            msg = "{"
-            msg += '"{}":{:.2f},'.format('smile', prob)
-            msg += "}"
-            client.publish(topic=iotTopic, payload=msg)
+                msg = "{"
+                msg += '"{}":{:.2f},'.format('smile', prob)
+                msg += "}"
+                client.publish(topic=iotTopic, payload=msg)
             global jpeg
             ret, jpeg = cv2.imencode('.jpg', frame)
 
